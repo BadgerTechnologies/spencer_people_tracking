@@ -7,7 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 
-find_package(OpenCV 2 REQUIRED)
+find_package(OpenCV REQUIRED)
 message(STATUS "Using OpenCV version ${OpenCV_VERSION} installed at: ${OpenCV_INCLUDE_DIRS}")
 message(STATUS "OpenCV supported compute capabilities are: ${OpenCV_COMPUTE_CAPABILITIES}")
 
@@ -21,7 +21,8 @@ include_directories(include src ${catkin_INCLUDE_DIRS} ${Eigen_INCLUDE_DIRS} ${P
 
 add_executable(detect_people src/detect_people.cpp)
 add_dependencies(detect_people ${catkin_EXPORTED_TARGETS}) # for generated message headers etc.
-target_link_libraries(detect_people ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})
+target_link_libraries(detect_people ${catkin_LIBRARIES} ${PCL_LIBRARIES}
+	${OpenCV_LIBRARIES} opencv_gpu)
 
 
 install(TARGETS detect_people
