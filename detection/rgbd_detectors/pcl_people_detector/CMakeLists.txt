@@ -25,7 +25,8 @@ endif()
 
 add_executable(detect_people src/detect_people.cpp)
 add_dependencies(detect_people ${catkin_EXPORTED_TARGETS}) # for generated message headers etc.
-target_link_libraries(detect_people ${catkin_LIBRARIES} ${PCL_LIBRARIES} ${OpenCV_LIBRARIES})
+target_link_libraries(detect_people ${catkin_LIBRARIES} ${PCL_LIBRARIES}
+	${OpenCV_LIBRARIES} opencv_gpu)
 
 
 install(TARGETS detect_people
