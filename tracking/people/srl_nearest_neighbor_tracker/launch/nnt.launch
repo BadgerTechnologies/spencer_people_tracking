@@ -3,6 +3,7 @@ Launches the nearest-neighbor tracker with a set of parameters that worked well 
 -->
 
 <launch>
+    <arg name="detected_persons" default="spencer/perception/detected_persons" />
     <arg name="subscriber_queue_size" default="1"/>
 
     <arg name="use_laser_shade_occlusion_manager" default="false"/>
@@ -17,6 +18,8 @@ Launches the nearest-neighbor tracker with a set of parameters that worked well 
 
 
     <node name="srl_nearest_neighbor_tracker" type="nnt_node" pkg="srl_nearest_neighbor_tracker" output="screen" clear_params="true" launch-prefix=""> <!-- launch-prefix="gdb -ex run -args " -->
+        <remap from="spencer/perception/detected_persons" to="$(arg detected_persons)" />
+
         <!-- Topic of secondary low-confidence detections that can be matched against an existing track, but not initiate a new one -->
         <param name="additional_low_confidence_detections" value="$(arg low_confidence_observations_topic)"/>
 
