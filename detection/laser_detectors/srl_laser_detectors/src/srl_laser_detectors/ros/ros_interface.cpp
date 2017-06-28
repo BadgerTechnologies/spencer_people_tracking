@@ -131,8 +131,8 @@ void ROSInterface::newLaserscanAndSegmentationAvailable(const sensor_msgs::Laser
         detectedPerson.pose.pose.position.z = 0.0;
 
         const double LARGE_VARIANCE = 999999999;
-        for(size_t d = 0; d < 2; d++) detectedPerson.pose.covariance[d*6 + d] = poseVariance;
-        for(size_t d = 2; d < 6; d++) detectedPerson.pose.covariance[d*6 + d] = LARGE_VARIANCE;
+        for(size_t d = 0; d < 3; d++) detectedPerson.pose.covariance[d*6 + d] = poseVariance;
+        for(size_t d = 3; d < 6; d++) detectedPerson.pose.covariance[d*6 + d] = LARGE_VARIANCE;
 
         detectedPersons.detections.push_back(detectedPerson);
     }

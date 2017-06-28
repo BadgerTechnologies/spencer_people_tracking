@@ -164,6 +164,7 @@ void GeometryUtils::convertObservationsToDetectedPersons(const double currentTim
 void GeometryUtils::meanAndCovarianceToPoseAndTwist(const StateVector& x, const StateMatrix& C, geometry_msgs::PoseWithCovariance& pose, geometry_msgs::TwistWithCovariance& twist)
 {
     // Some constants for determining the pose
+    const double LOW_VARIANCE = 0.01;
     const double AVERAGE_ROTATION_VARIANCE = pow(10.0 / 180 * M_PI, 2); // FIXME: determine from vx, vy?
     const double INFINITE_VARIANCE = 9999999; // should not really use infinity here because then the covariance matrix cannot be rotated (singularities!)
 
@@ -181,7 +182,7 @@ void GeometryUtils::meanAndCovarianceToPoseAndTwist(const StateVector& x, const 
     pose.pose.orientation = tf::createQuaternionMsgFromYaw(atan2(vy, vx)); // determine orientation from current velocity estimate
 
     pose.covariance.fill(0.0);
-    pose.covariance[2 * ROS_COV_DIM + 2] = INFINITE_VARIANCE; // default variance of z position, might get overwritten below if numAxes > 2
+    pose.covariance[2 * ROS_COV_DIM + 2] = LOW_VARIANCE; // default variance of z position, might get overwritten below if numAxes > 2
 
     for(int row = 0; row < numAxes; row++) {
        for(int col = 0; col < numAxes; col++) {
@@ -199,7 +200,7 @@ void GeometryUtils::meanAndCovarianceToPoseAndTwist(const StateVector& x, const 
     twist.twist.linear.z = numAxes > 2 ? xVis(numAxes + 2) : 0.0;
 
     twist.covariance.fill(0.0);
-    twist.covariance[2 * ROS_COV_DIM + 2] = INFINITE_VARIANCE; // default variance of z linear velocity, might get overwritten below if numAxes > 2
+    twist.covariance[2 * ROS_COV_DIM + 2] = LOW_VARIANCE; // default variance of z linear velocity, might get overwritten below if numAxes > 2
 
     for(int row = 0; row < numAxes; row++) {
        for(int col = 0; col < numAxes; col++) {
@@ -209,7 +210,7 @@ void GeometryUtils::meanAndCovarianceToPoseAndTwist(const StateVector& x, const 
 
     twist.covariance[3 * ROS_COV_DIM + 3] = INFINITE_VARIANCE; // variance of x angular velocity
     twist.covariance[4 * ROS_COV_DIM + 4] = INFINITE_VARIANCE; // variance of y angular velocity
-    twist.covariance[5 * ROS_COV_DIM + 5] = INFINITE_VARIANCE; // variance of z angular velocity
+    twist.covariance[5 * ROS_COV_DIM + 5] = LOW_VARIANCE; // variance of z angular velocity
 }
 
 
