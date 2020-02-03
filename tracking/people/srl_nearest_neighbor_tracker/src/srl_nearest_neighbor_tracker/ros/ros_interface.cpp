@@ -157,17 +157,16 @@ void ROSInterface::publishTracks(ros::Time currentRosTime, const Tracks& tracks)
         if(!m_geometryUtils.posePassesSanityCheck(trackedPerson.pose, true))
         {
             // Output track state history to console, best viewed using rqt Logger Console plugin
-            if(ROSCONSOLE_MIN_SEVERITY <= ROSCONSOLE_SEVERITY_WARN) {
+            ROS_WARN_STREAM("Pose of TrackedPerson " << trackedPerson.track_id << " first tracked " << trackedPerson.age.toSec()
+                            << " sec ago does not pass sanity check, will not publish this track");
+            if(ROSCONSOLE_MIN_SEVERITY <= ROSCONSOLE_SEVERITY_DEBUG) {
                 stringstream ss; size_t historyIndex  = track->stateHistory.size();                
                 foreach(FilterState::Ptr historicState, track->stateHistory) {
                     ss << "\n\n=== Historic motion filter state #" << --historyIndex << ": ===\n\n" << historicState << "\n";
                 }
-
-                ROS_WARN_STREAM("Pose of TrackedPerson " << trackedPerson.track_id << " first tracked " << trackedPerson.age.toSec()
-                                << " sec ago does not pass sanity check, will not publish this track:\n\n"
-                                << trackedPerson
-                                << "\n\n-----------------\n\n"
-                                << "Offending track's motion filter state history:" << ss.str());
+                ROS_DEBUG_STREAM(trackedPerson << " does not pass sanity check:"
+                                 << "\n\n-----------------\n\n"
+                                 << "Offending track's motion filter state history:" << ss.str());
             }
 
             // Skip publishing this track.
