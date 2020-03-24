@@ -43,7 +43,7 @@ namespace spencer_tracking_rviz_plugin
     /// The visual of a tracked person.
     struct DetectedPersonVisual
     {
-        boost::shared_ptr<Ogre::SceneNode> sceneNode;
+        Ogre::SceneNode* sceneNode;
 
         boost::shared_ptr<PersonVisual> personVisual;
         boost::shared_ptr<TextNode> detectionIdText, confidenceText, modalityText;

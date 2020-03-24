@@ -116,13 +116,13 @@ boost::shared_ptr<HumanAttributesDisplay::HumanAttributeVisual> HumanAttributesD
     if(m_humanAttributeVisuals.find(trackId) == m_humanAttributeVisuals.end()) {
         boost::shared_ptr<HumanAttributeVisual> humanAttributeVisual = boost::shared_ptr<HumanAttributeVisual>(new HumanAttributeVisual);
 
-        humanAttributeVisual->sceneNode = boost::shared_ptr<Ogre::SceneNode>(scene_node_->createChildSceneNode());
+        humanAttributeVisual->sceneNode = scene_node_->createChildSceneNode();
 
-        humanAttributeVisual->ageGroupText = boost::shared_ptr<TextNode>(new TextNode(context_->getSceneManager(), humanAttributeVisual->sceneNode.get()));
+        humanAttributeVisual->ageGroupText = boost::shared_ptr<TextNode>(new TextNode(context_->getSceneManager(), humanAttributeVisual->sceneNode));
         humanAttributeVisual->ageGroupText->showOnTop();
         humanAttributeVisual->ageGroupText->setCaption(" ");
 
-        humanAttributeVisual->personHeightText = boost::shared_ptr<TextNode>(new TextNode(context_->getSceneManager(), humanAttributeVisual->sceneNode.get()));
+        humanAttributeVisual->personHeightText = boost::shared_ptr<TextNode>(new TextNode(context_->getSceneManager(), humanAttributeVisual->sceneNode));
         humanAttributeVisual->personHeightText->showOnTop();
         humanAttributeVisual->personHeightText->setCaption(" ");
 
@@ -187,7 +187,7 @@ void HumanAttributesDisplay::processMessage(const spencer_human_attribute_msgs::
             ss.str(""); ss << "package://" ROS_PACKAGE_NAME "/media/" << valueWithHighestConfidence << "_symbol.dae";
             std::string meshResource = ss.str();
             
-            humanAttributeVisual->genderMesh = boost::shared_ptr<MeshNode>(new MeshNode(context_, humanAttributeVisual->sceneNode.get(), meshResource));
+            humanAttributeVisual->genderMesh = boost::shared_ptr<MeshNode>(new MeshNode(context_, humanAttributeVisual->sceneNode, meshResource));
             
             Ogre::ColourValue meshColor(1, 1, 1, 1);
             if(valueWithHighestConfidence == spencer_human_attribute_msgs::CategoricalAttribute::GENDER_MALE) meshColor = Ogre::ColourValue(0, 1, 1, 1);

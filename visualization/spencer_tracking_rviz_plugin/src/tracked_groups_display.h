@@ -90,7 +90,7 @@ namespace spencer_tracking_rviz_plugin
         struct GroupVisual {
             vector<boost::shared_ptr<rviz::Shape> > groupAssignmentCircles;
             vector<boost::shared_ptr<PersonVisual> > personVisuals;
-            vector<boost::shared_ptr<Ogre::SceneNode> > personVisualSceneNodes;
+            vector<Ogre::SceneNode*> personVisualSceneNodes;
             vector<boost::shared_ptr<rviz::BillboardLine> > connectionLines;
             boost::shared_ptr<TextNode> idText;
             group_id groupId;
@@ -107,7 +107,8 @@ namespace spencer_tracking_rviz_plugin
         bool isGroupHidden(group_id groupId);
 
         // Scene node for group affiliation history visualization
-        boost::shared_ptr<Ogre::SceneNode> m_groupAffiliationHistorySceneNode, m_groupsSceneNode;
+        Ogre::SceneNode* m_groupAffiliationHistorySceneNode;
+        Ogre::SceneNode* m_groupsSceneNode;
 
         std::string m_realFixedFrame;
 

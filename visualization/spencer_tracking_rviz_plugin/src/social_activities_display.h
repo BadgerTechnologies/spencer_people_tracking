@@ -102,7 +102,7 @@ namespace spencer_tracking_rviz_plugin
         Ogre::ColourValue getActivityColor(activity_type activityType, float confidence);
 
         // Scene nodes
-        boost::shared_ptr<Ogre::SceneNode> m_socialActivitiesSceneNode;
+        Ogre::SceneNode* m_socialActivitiesSceneNode;
 
         // User-editable property variables.
         rviz::StringProperty* m_excluded_activity_types_property;
@@ -142,7 +142,7 @@ namespace spencer_tracking_rviz_plugin
         // State variables
         struct PersonVisualContainer {
             boost::shared_ptr<PersonVisual> personVisual;
-            boost::shared_ptr<Ogre::SceneNode> sceneNode;
+            Ogre::SceneNode* sceneNode;
             track_id trackId;
         };
 

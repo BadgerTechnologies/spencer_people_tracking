@@ -92,7 +92,7 @@ void TrackedPersonsDisplay::onInitialize()
     //m_render_state_prediction_property  = new rviz::BoolProperty( "Render state prediction", true, "Render state prediction from Kalman filter", this, SLOT( updateRenderFlags() ));
 
     // Create a scene node for visualizing track history
-    m_trackHistorySceneNode = boost::shared_ptr<Ogre::SceneNode>(scene_node_->createChildSceneNode());
+    m_trackHistorySceneNode = scene_node_->createChildSceneNode();
 }
 
 TrackedPersonsDisplay::~TrackedPersonsDisplay()
@@ -245,7 +245,7 @@ void TrackedPersonsDisplay::personVisualTypeChanged()
     {
         const boost::shared_ptr<TrackedPersonVisual>& trackedPersonVisual = entry.second;
         trackedPersonVisual->personVisual.reset();
-        createPersonVisualIfRequired(trackedPersonVisual->sceneNode.get(), trackedPersonVisual->personVisual);
+        createPersonVisualIfRequired(trackedPersonVisual->sceneNode, trackedPersonVisual->personVisual);
     }
     stylesChanged();
 }
@@ -292,9 +292,9 @@ void TrackedPersonsDisplay::processMessage(const spencer_tracking_msgs::TrackedP
             m_cachedTracks[trackedPersonIt->track_id] = trackedPersonVisual;
 
             // This scene node is the parent of all visualization elements for the tracked person
-            trackedPersonVisual->sceneNode = boost::shared_ptr<Ogre::SceneNode>(scene_node_->createChildSceneNode());
-            trackedPersonVisual->historySceneNode = boost::shared_ptr<Ogre::SceneNode>(m_trackHistorySceneNode->createChildSceneNode());
-            trackedPersonVisual->historyLineSceneNode = boost::shared_ptr<Ogre::SceneNode>(m_trackHistorySceneNode->createChildSceneNode());
+            trackedPersonVisual->sceneNode = scene_node_->createChildSceneNode();
+            trackedPersonVisual->historySceneNode = m_trackHistorySceneNode->createChildSceneNode();
+            trackedPersonVisual->historyLineSceneNode = m_trackHistorySceneNode->createChildSceneNode();
         }
 
         // These values need to be remembered for later use in stylesChanged()
@@ -314,7 +314,7 @@ void TrackedPersonsDisplay::processMessage(const spencer_tracking_msgs::TrackedP
         trackedPersonVisual->isDeleted = false;
         trackedPersonVisual->numCyclesNotSeen = 0;
 
-        Ogre::SceneNode* currentSceneNode = trackedPersonVisual->sceneNode.get();
+        Ogre::SceneNode* currentSceneNode = trackedPersonVisual->sceneNode;
 
 
         //
@@ -354,7 +354,7 @@ void TrackedPersonsDisplay::processMessage(const spencer_tracking_msgs::TrackedP
             trackedPersonVisual->history.push_back(newHistoryEntry);
 
             // Always need to reset history line since history is like a queue, oldest element has to be removed but BillboardLine doesn't offer that functionality
-            trackedPersonVisual->historyLine.reset(new rviz::BillboardLine(context_->getSceneManager(), trackedPersonVisual->historyLineSceneNode.get()) );
+            trackedPersonVisual->historyLine.reset(new rviz::BillboardLine(context_->getSceneManager(), trackedPersonVisual->historyLineSceneNode) );
 
             if(m_render_history_as_line_property->getBool()) {
                 // History lines
@@ -370,7 +370,7 @@ void TrackedPersonsDisplay::processMessage(const spencer_tracking_msgs::TrackedP
             }
             else {
                 // History dots
-                newHistoryEntry->shape = boost::shared_ptr<rviz::Shape>(new rviz::Shape(rviz::Shape::Cylinder, context_->getSceneManager(), trackedPersonVisual->historySceneNode.get()));
+                newHistoryEntry->shape = boost::shared_ptr<rviz::Shape>(new rviz::Shape(rviz::Shape::Cylinder, context_->getSceneManager(), trackedPersonVisual->historySceneNode));
                 newHistoryEntry->shape->setPosition(newHistoryEntryPosition);
                 newHistoryEntry->shape->setOrientation(shapeQuaternion);
             }

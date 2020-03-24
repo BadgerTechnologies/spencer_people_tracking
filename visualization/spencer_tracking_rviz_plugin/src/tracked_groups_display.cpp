@@ -72,8 +72,8 @@ void TrackedGroupsDisplay::onInitialize()
     m_group_id_offset = new rviz::FloatProperty( "Group ID Z offset", 2.0, "Offset in z position (height) of the group ID text", this, SLOT(stylesChanged()) );
 
     // Create a scene node for visualizing group affiliation history
-    m_groupAffiliationHistorySceneNode = boost::shared_ptr<Ogre::SceneNode>(scene_node_->createChildSceneNode());
-    m_groupsSceneNode = boost::shared_ptr<Ogre::SceneNode>(scene_node_->createChildSceneNode());
+    m_groupAffiliationHistorySceneNode = scene_node_->createChildSceneNode();
+    m_groupsSceneNode = scene_node_->createChildSceneNode();
 }
 
 TrackedGroupsDisplay::~TrackedGroupsDisplay()
@@ -291,7 +291,7 @@ void TrackedGroupsDisplay::processMessage(const spencer_tracking_msgs::TrackedGr
 
                 const double groupAssignmentCircleHeight = 0;
                 const double groupAssignmentCircleDiameter = 0.9;
-                boost::shared_ptr<rviz::Shape> groupAssignmentCircle = boost::shared_ptr<rviz::Shape>(new rviz::Shape(rviz::Shape::Cylinder, context_->getSceneManager(), m_groupsSceneNode.get()));
+                boost::shared_ptr<rviz::Shape> groupAssignmentCircle = boost::shared_ptr<rviz::Shape>(new rviz::Shape(rviz::Shape::Cylinder, context_->getSceneManager(), m_groupsSceneNode));
 
                 groupAssignmentCircle->setScale(shapeQuaternion * Ogre::Vector3(groupAssignmentCircleDiameter, groupAssignmentCircleDiameter, groupAssignmentCircleHeight));
                 groupAssignmentCircle->setOrientation(shapeQuaternion);
@@ -307,17 +307,18 @@ void TrackedGroupsDisplay::processMessage(const spencer_tracking_msgs::TrackedGr
                 //
 
                 // This scene node is the parent of all visualization elements for the tracked person
-                boost::shared_ptr<Ogre::SceneNode> sceneNode = boost::shared_ptr<Ogre::SceneNode>(scene_node_->createChildSceneNode());
+                Ogre::SceneNode* sceneNode = scene_node_->createChildSceneNode();
                 groupVisual->personVisualSceneNodes.push_back(sceneNode);
 
                 // Create new visual for the person itself, if needed
                 boost::shared_ptr<PersonVisual> personVisual;
-                createPersonVisualIfRequired(sceneNode.get(), personVisual);
+                createPersonVisualIfRequired(sceneNode, personVisual);
+>>>>>>> b6b32e1... fix double free from Ogre::SceneNode in shared_ptr
                 groupVisual->personVisuals.push_back(personVisual);
 
                 const double personHeight = personVisual ? personVisual->getHeight() : 0;
                 const Ogre::Matrix3 covXYZinTargetFrame = covarianceXYZIntoTargetFrame(trackedPerson->pose);
-                setPoseOrientation(sceneNode.get(), trackedPerson->pose, covXYZinTargetFrame, personHeight);
+                setPoseOrientation(sceneNode, trackedPerson->pose, covXYZinTargetFrame, personHeight);
 
 
                 //
@@ -338,7 +339,7 @@ void TrackedGroupsDisplay::processMessage(const spencer_tracking_msgs::TrackedGr
                         const Ogre::Vector3& position2 = verticalShift + otherTrackedPerson->center;
 
                         // Add line connecting the two tracks
-                        boost::shared_ptr<rviz::BillboardLine> connectionLine(new rviz::BillboardLine(context_->getSceneManager(), m_groupsSceneNode.get()));
+                        boost::shared_ptr<rviz::BillboardLine> connectionLine(new rviz::BillboardLine(context_->getSceneManager(), m_groupsSceneNode));
                         connectionLine->setMaxPointsPerLine(2);
                         connectionLine->addPoint(position1);
                         connectionLine->addPoint(position2);
@@ -352,7 +353,7 @@ void TrackedGroupsDisplay::processMessage(const spencer_tracking_msgs::TrackedGr
                 //
               
                 boost::shared_ptr<GroupAffiliationHistoryEntry> newHistoryEntry(new GroupAffiliationHistoryEntry);
-                newHistoryEntry->shape = boost::shared_ptr<rviz::Shape>(new rviz::Shape(rviz::Shape::Cylinder, context_->getSceneManager(), m_groupAffiliationHistorySceneNode.get()));
+                newHistoryEntry->shape = boost::shared_ptr<rviz::Shape>(new rviz::Shape(rviz::Shape::Cylinder, context_->getSceneManager(), m_groupAffiliationHistorySceneNode));
                 newHistoryEntry->shape->setPosition(mapFrameTransform.inverse() * trackCenterAtGroundPlane);
                 newHistoryEntry->shape->setOrientation(shapeQuaternion);
                 newHistoryEntry->wasOccluded = trackedPerson->isOccluded;
@@ -372,7 +373,7 @@ void TrackedGroupsDisplay::processMessage(const spencer_tracking_msgs::TrackedGr
         groupVisual->groupCenter = groupCenter;
 
         // Group ID
-        boost::shared_ptr<TextNode> idText(new TextNode(context_->getSceneManager(), m_groupsSceneNode.get()));
+        boost::shared_ptr<TextNode> idText(new TextNode(context_->getSceneManager(), m_groupsSceneNode));
         ss.str(""); ss << "group " << trackedGroup.group_id;
         idText->setCaption(ss.str());
         idText->showOnTop();

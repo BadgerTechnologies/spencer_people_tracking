@@ -81,7 +81,7 @@ void DetectedPersonsDisplay::personVisualTypeChanged()
     foreach(boost::shared_ptr<DetectedPersonVisual>& detectedPersonVisual, m_previousDetections)
     {
         detectedPersonVisual->personVisual.reset();
-        createPersonVisualIfRequired(detectedPersonVisual->sceneNode.get(), detectedPersonVisual->personVisual);
+        createPersonVisualIfRequired(detectedPersonVisual->sceneNode, detectedPersonVisual->personVisual);
     }
     stylesChanged();
 }
@@ -168,10 +168,10 @@ void DetectedPersonsDisplay::processMessage(const spencer_tracking_msgs::Detecte
         m_previousDetections.push_back(detectedPersonVisual);
 
         // This scene node is the parent of all visualization elements for the detected person
-        detectedPersonVisual->sceneNode = boost::shared_ptr<Ogre::SceneNode>(scene_node_->createChildSceneNode());
+        detectedPersonVisual->sceneNode = scene_node_->createChildSceneNode();
         detectedPersonVisual->detectionId = detectedPersonIt->detection_id;
         detectedPersonVisual->confidence = detectedPersonIt->confidence;
-        Ogre::SceneNode* currentSceneNode = detectedPersonVisual->sceneNode.get();
+        Ogre::SceneNode* currentSceneNode = detectedPersonVisual->sceneNode;
 
 
         //
