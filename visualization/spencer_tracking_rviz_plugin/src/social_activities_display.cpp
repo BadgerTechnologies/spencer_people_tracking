@@ -109,7 +109,7 @@ void SocialActivitiesDisplay::onInitialize()
     m_commonProperties->color_map_offset->setHidden(true);
 
     // Create a scene node for visualizing group affiliation history
-    m_socialActivitiesSceneNode = shared_ptr<Ogre::SceneNode>(scene_node_->createChildSceneNode());
+    m_socialActivitiesSceneNode = scene_node_->createChildSceneNode();
 }
 
 SocialActivitiesDisplay::~SocialActivitiesDisplay()
@@ -255,7 +255,7 @@ void SocialActivitiesDisplay::personVisualTypeChanged()
     m_personVisualMap.clear();
     foreach(PersonVisualContainer& personVisualContainer, m_personVisualMap | boost::adaptors::map_values) {
         personVisualContainer.personVisual.reset();
-        createPersonVisualIfRequired(personVisualContainer.sceneNode.get(), personVisualContainer.personVisual);
+        createPersonVisualIfRequired(personVisualContainer.sceneNode, personVisualContainer.personVisual);
     }
     stylesChanged();
 }
@@ -403,7 +403,7 @@ void SocialActivitiesDisplay::processMessage(const spencer_social_relation_msgs:
 
                 if(m_render_circles_property->getBool()) // only create circles if they are enabled, for better performance
                 {
-                    shared_ptr<rviz::Shape> circle = shared_ptr<rviz::Shape>(new rviz::Shape(rviz::Shape::Cylinder, context_->getSceneManager(), m_socialActivitiesSceneNode.get()));
+                    shared_ptr<rviz::Shape> circle = shared_ptr<rviz::Shape>(new rviz::Shape(rviz::Shape::Cylinder, context_->getSceneManager(), m_socialActivitiesSceneNode));
 
                     const double circleHeight = 0;
                     circle->setOrientation(shapeQuaternion);
@@ -434,7 +434,7 @@ void SocialActivitiesDisplay::processMessage(const spencer_social_relation_msgs:
                             const Ogre::Vector3& position2 = verticalShift + otherTrackedPerson->center;
 
                             // Add line connecting the two tracks
-                            shared_ptr<rviz::BillboardLine> connectionLine(new rviz::BillboardLine(context_->getSceneManager(), m_socialActivitiesSceneNode.get()));
+                            shared_ptr<rviz::BillboardLine> connectionLine(new rviz::BillboardLine(context_->getSceneManager(), m_socialActivitiesSceneNode));
                             connectionLine->setMaxPointsPerLine(2);
                             connectionLine->addPoint(position1);
                             connectionLine->addPoint(position2);
@@ -457,7 +457,7 @@ void SocialActivitiesDisplay::processMessage(const spencer_social_relation_msgs:
         // Social activity type
         if(numGoodTracksInActivity > 0) {
             for(int i = 0; i < (m_activity_type_per_track_property->getBool() ? socialActivityVisual->trackIds.size() : 1); i++) {
-                shared_ptr<TextNode> typeText(new TextNode(context_->getSceneManager(), m_socialActivitiesSceneNode.get()));
+                shared_ptr<TextNode> typeText(new TextNode(context_->getSceneManager(), m_socialActivitiesSceneNode));
                 typeText->showOnTop();
                 socialActivityVisual->typeTexts.push_back(typeText);
             }
@@ -509,15 +509,15 @@ void SocialActivitiesDisplay::processMessage(const spencer_social_relation_msgs:
         }
         else {
             personVisualContainer.trackId = trackId;
-            personVisualContainer.sceneNode = shared_ptr<Ogre::SceneNode>(scene_node_->createChildSceneNode()); // This scene node is the parent of all visualization elements for the tracked person
+            personVisualContainer.sceneNode = scene_node_->createChildSceneNode(); // This scene node is the parent of all visualization elements for the tracked person
         }
 
         // Create new visual for the person itself, if needed
-        createPersonVisualIfRequired(personVisualContainer.sceneNode.get(), personVisualContainer.personVisual);
+        createPersonVisualIfRequired(personVisualContainer.sceneNode, personVisualContainer.personVisual);
 
         const double personHeight = personVisualContainer.personVisual ? personVisualContainer.personVisual->getHeight() : 0;
         const Ogre::Matrix3 covXYZinTargetFrame = covarianceXYZIntoTargetFrame(trackedPerson->pose);
-        setPoseOrientation(personVisualContainer.sceneNode.get(), trackedPerson->pose, covXYZinTargetFrame, personHeight);
+        setPoseOrientation(personVisualContainer.sceneNode, trackedPerson->pose, covXYZinTargetFrame, personHeight);
 
         // Update walking animation if required
         const Ogre::Vector3 velocityVector = getVelocityVector(trackedPerson->twist);

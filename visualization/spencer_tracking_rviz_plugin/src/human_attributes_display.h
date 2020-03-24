@@ -76,7 +76,7 @@ namespace spencer_tracking_rviz_plugin
 
     private:
         struct HumanAttributeVisual {
-            shared_ptr<Ogre::SceneNode> sceneNode;
+            Ogre::SceneNode* sceneNode;
             shared_ptr<MeshNode> genderMesh;
             unsigned int trackId;
             shared_ptr<TextNode> ageGroupText;

@@ -61,7 +61,9 @@ namespace spencer_tracking_rviz_plugin
         shared_ptr<rviz::BillboardLine> historyLine;
         Ogre::Vector3 positionOfLastHistoryEntry;
 
-        shared_ptr<Ogre::SceneNode> sceneNode, historySceneNode, historyLineSceneNode;
+        Ogre::SceneNode* sceneNode;
+        Ogre::SceneNode* historySceneNode;
+        Ogre::SceneNode* historyLineSceneNode;
 
         shared_ptr<PersonVisual> personVisual;
         shared_ptr<TextNode> idText, detectionIdText, stateText;
@@ -121,7 +123,7 @@ namespace spencer_tracking_rviz_plugin
         track_map m_cachedTracks;
 
         // Scene node for track history visualization
-        shared_ptr<Ogre::SceneNode> m_trackHistorySceneNode;
+        Ogre::SceneNode* m_trackHistorySceneNode;
         std::string m_realFixedFrame;
 
         // User-editable property variables.

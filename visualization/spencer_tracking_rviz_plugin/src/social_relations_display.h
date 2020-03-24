@@ -83,7 +83,7 @@ namespace spencer_tracking_rviz_plugin
         void updateRelationVisualStyles(shared_ptr<RelationVisual>& relationVisual);
         
         // Scene node for group affiliation history visualization
-        shared_ptr<Ogre::SceneNode> m_socialRelationsSceneNode;
+        Ogre::SceneNode* m_socialRelationsSceneNode;
 
         // User-editable property variables.
         rviz::StringProperty* m_relation_type_filter_property;

@@ -72,8 +72,8 @@ void TrackedGroupsDisplay::onInitialize()
     m_group_id_offset = new rviz::FloatProperty( "Group ID Z offset", 2.0, "Offset in z position (height) of the group ID text", this, SLOT(stylesChanged()) );
 
     // Create a scene node for visualizing group affiliation history
-    m_groupAffiliationHistorySceneNode = shared_ptr<Ogre::SceneNode>(scene_node_->createChildSceneNode());
-    m_groupsSceneNode = shared_ptr<Ogre::SceneNode>(scene_node_->createChildSceneNode());
+    m_groupAffiliationHistorySceneNode = scene_node_->createChildSceneNode();
+    m_groupsSceneNode = scene_node_->createChildSceneNode();
 }
 
 TrackedGroupsDisplay::~TrackedGroupsDisplay()
@@ -291,7 +291,7 @@ void TrackedGroupsDisplay::processMessage(const spencer_tracking_msgs::TrackedGr
 
                 const double groupAssignmentCircleHeight = 0;
                 const double groupAssignmentCircleDiameter = 0.9;
-                shared_ptr<rviz::Shape> groupAssignmentCircle = shared_ptr<rviz::Shape>(new rviz::Shape(rviz::Shape::Cylinder, context_->getSceneManager(), m_groupsSceneNode.get()));
+                shared_ptr<rviz::Shape> groupAssignmentCircle = shared_ptr<rviz::Shape>(new rviz::Shape(rviz::Shape::Cylinder, context_->getSceneManager(), m_groupsSceneNode));
 
                 groupAssignmentCircle->setScale(shapeQuaternion * Ogre::Vector3(groupAssignmentCircleDiameter, groupAssignmentCircleDiameter, groupAssignmentCircleHeight));
                 groupAssignmentCircle->setOrientation(shapeQuaternion);
@@ -307,17 +307,17 @@ void TrackedGroupsDisplay::processMessage(const spencer_tracking_msgs::TrackedGr
                 //
 
                 // This scene node is the parent of all visualization elements for the tracked person
-                shared_ptr<Ogre::SceneNode> sceneNode = shared_ptr<Ogre::SceneNode>(scene_node_->createChildSceneNode());
+                Ogre::SceneNode* sceneNode = scene_node_->createChildSceneNode();
                 groupVisual->personVisualSceneNodes.push_back(sceneNode);
 
                 // Create new visual for the person itself, if needed
                 shared_ptr<PersonVisual> personVisual;
-                createPersonVisualIfRequired(sceneNode.get(), personVisual);
+                createPersonVisualIfRequired(sceneNode, personVisual);
                 groupVisual->personVisuals.push_back(personVisual);
 
                 const double personHeight = personVisual ? personVisual->getHeight() : 0;
                 const Ogre::Matrix3 covXYZinTargetFrame = covarianceXYZIntoTargetFrame(trackedPerson->pose);
-                setPoseOrientation(sceneNode.get(), trackedPerson->pose, covXYZinTargetFrame, personHeight);
+                setPoseOrientation(sceneNode, trackedPerson->pose, covXYZinTargetFrame, personHeight);
 
 
                 //
@@ -338,7 +338,7 @@ void TrackedGroupsDisplay::processMessage(const spencer_tracking_msgs::TrackedGr
                         const Ogre::Vector3& position2 = verticalShift + otherTrackedPerson->center;
 
                         // Add line connecting the two tracks
-                        shared_ptr<rviz::BillboardLine> connectionLine(new rviz::BillboardLine(context_->getSceneManager(), m_groupsSceneNode.get()));
+                        shared_ptr<rviz::BillboardLine> connectionLine(new rviz::BillboardLine(context_->getSceneManager(), m_groupsSceneNode));
                         connectionLine->setMaxPointsPerLine(2);
                         connectionLine->addPoint(position1);
                         connectionLine->addPoint(position2);
@@ -352,7 +352,7 @@ void TrackedGroupsDisplay::processMessage(const spencer_tracking_msgs::TrackedGr
                 //
               
                 shared_ptr<GroupAffiliationHistoryEntry> newHistoryEntry(new GroupAffiliationHistoryEntry);
-                newHistoryEntry->shape = shared_ptr<rviz::Shape>(new rviz::Shape(rviz::Shape::Cylinder, context_->getSceneManager(), m_groupAffiliationHistorySceneNode.get()));
+                newHistoryEntry->shape = shared_ptr<rviz::Shape>(new rviz::Shape(rviz::Shape::Cylinder, context_->getSceneManager(), m_groupAffiliationHistorySceneNode));
                 newHistoryEntry->shape->setPosition(mapFrameTransform.inverse() * trackCenterAtGroundPlane);
                 newHistoryEntry->shape->setOrientation(shapeQuaternion);
                 newHistoryEntry->wasOccluded = trackedPerson->isOccluded;
@@ -372,7 +372,7 @@ void TrackedGroupsDisplay::processMessage(const spencer_tracking_msgs::TrackedGr
         groupVisual->groupCenter = groupCenter;
 
         // Group ID
-        shared_ptr<TextNode> idText(new TextNode(context_->getSceneManager(), m_groupsSceneNode.get()));
+        shared_ptr<TextNode> idText(new TextNode(context_->getSceneManager(), m_groupsSceneNode));
         ss.str(""); ss << "group " << trackedGroup.group_id;
         idText->setCaption(ss.str());
         idText->showOnTop();

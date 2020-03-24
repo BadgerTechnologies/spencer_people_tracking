@@ -57,7 +57,7 @@ void SocialRelationsDisplay::onInitialize()
     m_render_negative_person_relations_property = new rviz::BoolProperty( "Render negative relations", false, "Render negative person relations", this, SLOT(stylesChanged()));
    
     // Create a scene node for visualizing social relations
-    m_socialRelationsSceneNode = shared_ptr<Ogre::SceneNode>(scene_node_->createChildSceneNode());
+    m_socialRelationsSceneNode = scene_node_->createChildSceneNode();
 }
 
 SocialRelationsDisplay::~SocialRelationsDisplay()
@@ -102,7 +102,7 @@ void SocialRelationsDisplay::processMessage(const spencer_social_relation_msgs::
         const Ogre::Vector3& centerPosition = (position1 + position2) / 2.0;
 
         // Add line connecting the two tracks
-        shared_ptr<rviz::BillboardLine> relationLine(new rviz::BillboardLine(context_->getSceneManager(), m_socialRelationsSceneNode.get()));
+        shared_ptr<rviz::BillboardLine> relationLine(new rviz::BillboardLine(context_->getSceneManager(), m_socialRelationsSceneNode));
         relationLine->setMaxPointsPerLine(2);
         relationLine->addPoint(position1);
         relationLine->addPoint(position2);
@@ -110,7 +110,7 @@ void SocialRelationsDisplay::processMessage(const spencer_social_relation_msgs::
 
         // Add relationship strength text
         stringstream ss;
-        shared_ptr<TextNode> relationText(new TextNode(context_->getSceneManager(), m_socialRelationsSceneNode.get()));
+        shared_ptr<TextNode> relationText(new TextNode(context_->getSceneManager(), m_socialRelationsSceneNode));
         ss.str(""); ss << std::fixed << std::setprecision(0) << socialRelation.strength * 100 << "%";
         relationText->setCaption(ss.str());
         relationText->setPosition(centerPosition + textShift);
