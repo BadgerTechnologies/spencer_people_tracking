@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.0.2)
 project(rwth_upper_body_detector)
 
 ## Find catkin macros and libraries

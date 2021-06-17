@@ -26,7 +26,7 @@
 #  OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 #  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.0.2)
 project(srl_nearest_neighbor_tracker)
 
 find_package(catkin REQUIRED COMPONENTS roscpp tf eigen_conversions tf_conversions spencer_diagnostics spencer_tracking_msgs cmake_modules angles srl_laser_segmentation)
